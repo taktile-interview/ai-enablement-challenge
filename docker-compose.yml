@@ -7,6 +7,9 @@ services:
     ports:
       - "8001:8000"
     restart: unless-stopped
+    environment:
+      # Shared with you at the start of the interview — setup works without it.
+      - CHALLENGE_KEY=${CHALLENGE_KEY:-}
 
   tracker-api:
     image: ghcr.io/taktile-interview/tracker-api:latest

@@ -22,8 +22,10 @@ the interview**, so there's nothing to prepare beyond getting this running.
 
 Just before the interview, please `git pull` so you're on the latest version.
 
-You do **not** need an LLM API key in advance — we'll share one with you at the
-start of the interview (and revoke it afterwards).
+You do **not** need any keys in advance. At the start of the interview we'll
+share two things with you: an LLM API key (revoked afterwards) and a
+`CHALLENGE_KEY` that unlocks the full challenge dataset — until then the CRM
+serves a small demo dataset, which is all the smoke test needs.
 
 ## What's here
 
