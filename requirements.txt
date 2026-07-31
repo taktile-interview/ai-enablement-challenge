@@ -1,0 +1,3 @@
+# Minimum to run the smoke test and the starter client.
+# You'll add your preferred LLM SDK during the interview (e.g. `anthropic`).
+requests>=2.31

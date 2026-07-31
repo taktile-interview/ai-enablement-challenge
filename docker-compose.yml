@@ -1,0 +1,15 @@
+# Pulls prebuilt images from GHCR — no local build needed.
+# Pin to a specific tag/digest before sharing with candidates so everyone runs
+# the same environment. `latest` is fine for local trials.
+services:
+  crm-api:
+    image: ghcr.io/taktile-interview/crm-api:latest
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+
+  tracker-api:
+    image: ghcr.io/taktile-interview/tracker-api:latest
+    ports:
+      - "8002:8000"
+    restart: unless-stopped
