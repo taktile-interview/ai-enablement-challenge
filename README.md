@@ -9,15 +9,23 @@ the interview**, so there's nothing to prepare beyond getting this running.
 
 1. **Install Docker and Docker Compose.** Docker 28.0.0+ and Docker Compose
    v2.36.2+ (or the built-in `docker compose`).
-2. **Have your preferred Python environment ready** (3.10+). We'll build a small
-   agent in Python. `pip install -r requirements.txt` covers the starter code;
-   you'll add an LLM SDK (e.g. `anthropic`) during the interview.
+2. **Set up a Python environment (3.10+) and install the requirements.** We'll
+   build a small agent in Python. Use your preferred setup; if in doubt, a
+   plain venv works everywhere:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate        # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+   (If you use `uv`, `conda`, or similar: anything that gives you Python 3.10+
+   with the requirements installed is fine — the smoke test verifies it.)
 3. **Start the environment and confirm the smoke test passes:**
    ```bash
    docker compose up          # pulls two images, serves on :8001 and :8002
-   python smoke_test.py       # in another terminal
+   python smoke_test.py       # in another terminal, inside your venv
    ```
-   A green smoke test means you're ready.
+   A green smoke test means you're ready — it checks your Python environment
+   and both services.
 4. **Check your Google Meet setup** — microphone, camera, and full screen share.
 
 Just before the interview, please `git pull` so you're on the latest version.
@@ -34,7 +42,7 @@ serves a small demo dataset, which is all the smoke test needs.
 | `docker-compose.yml` | Pulls the mock `crm-api` (`:8001`) and `tracker-api` (`:8002`). |
 | `smoke_test.py` | Confirms both services are up. Setup check only. |
 | `crm_client.py` | A **working but naive** CRM client — your starting point. |
-| `requirements.txt` | Just `requests`, for the smoke test and starter client. |
+| `requirements.txt` | Everything to install before the interview. |
 
 ## The services
 

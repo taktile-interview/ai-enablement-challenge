@@ -13,10 +13,32 @@ your own client resilient to that is part of the interview.
 import sys
 import time
 
-import requests
-
 CRM_URL = "http://localhost:8001"
 TRACKER_URL = "http://localhost:8002"
+
+
+def check_python_env() -> None:
+    if sys.version_info < (3, 10):
+        raise SystemExit(
+            f"FAILED: Python 3.10+ required, you are on {sys.version.split()[0]}. "
+            "Create a venv with a newer Python before the interview."
+        )
+    missing = []
+    for module in ("requests", "anthropic"):
+        try:
+            __import__(module)
+        except ImportError:
+            missing.append(module)
+    if missing:
+        raise SystemExit(
+            f"FAILED: missing package(s): {', '.join(missing)}. "
+            "Run: pip install -r requirements.txt (inside your venv)."
+        )
+
+
+check_python_env()
+
+import requests  # noqa: E402  (import verified above)
 
 
 def _get(url: str, attempts: int = 8) -> requests.Response:
@@ -34,6 +56,7 @@ def _get(url: str, attempts: int = 8) -> requests.Response:
 
 
 def main() -> None:
+    print(f"Python {sys.version.split()[0]} with required packages ... ok")
     print("Checking crm-api ...", end=" ", flush=True)
     _get(f"{CRM_URL}/health")
     convs = _get(f"{CRM_URL}/conversations").json()["conversations"]
