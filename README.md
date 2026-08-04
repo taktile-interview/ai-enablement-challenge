@@ -30,44 +30,50 @@ share the service URLs and an LLM API key (revoked afterwards).
 
 ## At the start of the interview
 
-We'll paste two service URLs into the chat. Export them and re-run the smoke
-test to confirm you can reach everything:
+The service URLs are already configured in the starter code — we switch the
+services on for the session. Re-run `python smoke_test.py` when we begin; it
+will confirm you can reach them. The only thing to export is the LLM API key
+we share in the chat:
 
 ```bash
-export CRM_URL=https://...
-export TRACKER_URL=https://...
-python smoke_test.py
+export ANTHROPIC_API_KEY=<key from chat>
 ```
 
 ## What's here
 
 | File | What it is |
 |------|------------|
-| `smoke_test.py` | Verifies your Python env; with URLs set, also checks the services. |
+| `smoke_test.py` | Verifies your Python env, and the services when they're online. |
 | `crm_client.py` | A **working but naive** CRM client — your starting point. |
 | `requirements.txt` | Everything to install before the interview. |
 | `docker-compose.yml` | Fallback for running the services locally — only used if we ask you to. |
 
 ## The services
 
-- **CRM API** (`$CRM_URL`) — `GET /conversations` returns support conversations
-  with cursor pagination. It behaves like a real upstream: it can rate-limit
-  and occasionally error.
-- **Ticket tracker** (`$TRACKER_URL`) — `POST /tickets` files a ticket;
-  `GET /tickets` lists them. There's more to it, which we'll get into live.
+- **CRM API** (`https://ai-challenge-crm.ngrok.app`) — `GET /conversations`
+  returns support conversations with cursor pagination. It behaves like a real
+  upstream: it can rate-limit and occasionally error.
+- **Ticket tracker** (`https://ai-challenge-issue-tracker.ngrok.app`) —
+  `POST /tickets` files a ticket; `GET /tickets` lists them. There's more to
+  it, which we'll get into live.
 
-Once you have the URLs, explore with the naive client:
+They're only online during interview sessions. Once they are, explore with the
+naive client:
 
 ```bash
 python crm_client.py
 ```
 
+(Both URLs can be overridden with the `CRM_URL` / `TRACKER_URL` env vars, e.g.
+for the local fallback.)
+
 ## Troubleshooting
 
 - **Smoke test fails on the Python check** — make sure you're inside the venv
   where you ran `pip install -r requirements.txt`.
-- **Smoke test can't reach the services (interview only)** — double-check the
-  exported URLs against the chat; if it persists, tell us — the services run on
+- **"Services are not online" before the interview** — expected; they're only
+  switched on for the session.
+- **"Services are not online" during the interview** — tell us; they run on
   our side and we can fix them.
 
 See you at the interview!

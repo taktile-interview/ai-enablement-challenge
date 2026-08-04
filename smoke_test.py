@@ -1,22 +1,20 @@
 """Smoke test — confirms you are ready for the interview.
 
-Before the interview (all you need to do):
+Run it before the interview:
 
     python smoke_test.py
 
-This verifies your Python environment. The mock services are hosted by us; we
-share their URLs at the start of the session, and the test then also checks
-you can reach them:
-
-    CRM_URL=https://... TRACKER_URL=https://... python smoke_test.py
+It always verifies your Python environment. The mock services are hosted by
+us and are switched on for the interview itself — if they're reachable, the
+test checks them too; if not, that's expected before the interview.
 """
 
 import os
 import sys
 import time
 
-CRM_URL = os.environ.get("CRM_URL", "")
-TRACKER_URL = os.environ.get("TRACKER_URL", "")
+CRM_URL = os.environ.get("CRM_URL", "https://ai-challenge-crm.ngrok.app").rstrip("/")
+TRACKER_URL = os.environ.get("TRACKER_URL", "https://ai-challenge-issue-tracker.ngrok.app").rstrip("/")
 
 
 def check_python_env() -> None:
@@ -39,7 +37,16 @@ def check_python_env() -> None:
     print(f"Python {sys.version.split()[0]} with required packages ... ok")
 
 
-def _get(url: str, attempts: int = 8):
+def _services_online() -> bool:
+    import requests
+
+    try:
+        return requests.get(f"{CRM_URL}/health", timeout=5).status_code == 200
+    except requests.RequestException:
+        return False
+
+
+def _get(url: str, attempts: int = 5):
     import requests
 
     last = None
@@ -57,29 +64,28 @@ def _get(url: str, attempts: int = 8):
 
 def check_services() -> None:
     print("Checking CRM API ...", end=" ", flush=True)
-    _get(f"{CRM_URL.rstrip('/')}/health")
-    convs = _get(f"{CRM_URL.rstrip('/')}/conversations").json()["conversations"]
+    convs = _get(f"{CRM_URL}/conversations").json()["conversations"]
     print(f"ok ({len(convs)} conversations on the first page)")
 
     print("Checking ticket tracker ...", end=" ", flush=True)
-    _get(f"{TRACKER_URL.rstrip('/')}/health")
-    _get(f"{TRACKER_URL.rstrip('/')}/tickets")
+    _get(f"{TRACKER_URL}/health")
+    _get(f"{TRACKER_URL}/tickets")
     print("ok")
 
 
 def main() -> None:
     check_python_env()
 
-    if CRM_URL and TRACKER_URL:
+    if _services_online():
         check_services()
         print("\nSmoke test passed — you can reach the services. Let's go!")
-    elif CRM_URL or TRACKER_URL:
-        raise SystemExit("FAILED: set both CRM_URL and TRACKER_URL (or neither).")
     else:
         print(
-            "\nPython environment ready — that's everything for the pre-work.\n"
-            "We'll share the service URLs at the start of the interview; re-run then with:\n"
-            "  CRM_URL=<url> TRACKER_URL=<url> python smoke_test.py"
+            "\nServices are not online right now — that's expected before the\n"
+            "interview (we switch them on for the session itself).\n"
+            "Your Python environment is ready, which is everything the pre-work needs.\n"
+            "If you're seeing this DURING the interview, tell us — the services run\n"
+            "on our side."
         )
 
 

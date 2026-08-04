@@ -5,17 +5,13 @@ returns conversations, and it works fine for a single quick call. Under a real
 agent loop it will show its seams: no retry/backoff (the API rate-limits and
 occasionally 500s) and no deduplication (the API's pagination can hand you the
 same conversation on two adjacent pages). Hardening it is part of the task.
-
-The service URL is shared at the start of the interview:
-
-    export CRM_URL=https://...
 """
 
 import os
 
 import requests
 
-CRM_URL = os.environ.get("CRM_URL", "http://localhost:8001")
+CRM_URL = os.environ.get("CRM_URL", "https://ai-challenge-crm.ngrok.app")
 
 
 class CRMClient:
