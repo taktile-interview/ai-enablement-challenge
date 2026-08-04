@@ -1,20 +1,22 @@
-"""Smoke test — confirms your environment is ready for the interview.
+"""Smoke test — confirms you are ready for the interview.
 
-This only checks that the two services are up and answering. It does NOT test
-the challenge task (that's shared live). Run it after `docker compose up`:
+Before the interview (all you need to do):
 
     python smoke_test.py
 
-A green run means you're set. Note the CRM API deliberately rate-limits and
-occasionally returns 500s — this script retries so setup stays reliable; making
-your own client resilient to that is part of the interview.
+This verifies your Python environment. The mock services are hosted by us; we
+share their URLs at the start of the session, and the test then also checks
+you can reach them:
+
+    CRM_URL=https://... TRACKER_URL=https://... python smoke_test.py
 """
 
+import os
 import sys
 import time
 
-CRM_URL = "http://localhost:8001"
-TRACKER_URL = "http://localhost:8002"
+CRM_URL = os.environ.get("CRM_URL", "")
+TRACKER_URL = os.environ.get("TRACKER_URL", "")
 
 
 def check_python_env() -> None:
@@ -34,14 +36,12 @@ def check_python_env() -> None:
             f"FAILED: missing package(s): {', '.join(missing)}. "
             "Run: pip install -r requirements.txt (inside your venv)."
         )
+    print(f"Python {sys.version.split()[0]} with required packages ... ok")
 
 
-check_python_env()
+def _get(url: str, attempts: int = 8):
+    import requests
 
-import requests  # noqa: E402  (import verified above)
-
-
-def _get(url: str, attempts: int = 8) -> requests.Response:
     last = None
     for i in range(attempts):
         try:
@@ -52,27 +52,36 @@ def _get(url: str, attempts: int = 8) -> requests.Response:
         except requests.RequestException as exc:
             last = str(exc)
         time.sleep(1.0 + i * 0.5)
-    raise SystemExit(f"FAILED: {url} did not become healthy ({last}).")
+    raise SystemExit(f"FAILED: {url} did not respond ({last}).")
+
+
+def check_services() -> None:
+    print("Checking CRM API ...", end=" ", flush=True)
+    _get(f"{CRM_URL.rstrip('/')}/health")
+    convs = _get(f"{CRM_URL.rstrip('/')}/conversations").json()["conversations"]
+    print(f"ok ({len(convs)} conversations on the first page)")
+
+    print("Checking ticket tracker ...", end=" ", flush=True)
+    _get(f"{TRACKER_URL.rstrip('/')}/health")
+    _get(f"{TRACKER_URL.rstrip('/')}/tickets")
+    print("ok")
 
 
 def main() -> None:
-    print(f"Python {sys.version.split()[0]} with required packages ... ok")
-    print("Checking crm-api ...", end=" ", flush=True)
-    _get(f"{CRM_URL}/health")
-    convs = _get(f"{CRM_URL}/conversations").json()["conversations"]
-    print(f"ok ({len(convs)} conversations on the first page)")
+    check_python_env()
 
-    print("Checking tracker-api ...", end=" ", flush=True)
-    _get(f"{TRACKER_URL}/health")
-    _get(f"{TRACKER_URL}/tickets")
-    print("ok")
-
-    print("\nSmoke test passed — your environment is ready. See you at the interview!")
+    if CRM_URL and TRACKER_URL:
+        check_services()
+        print("\nSmoke test passed — you can reach the services. Let's go!")
+    elif CRM_URL or TRACKER_URL:
+        raise SystemExit("FAILED: set both CRM_URL and TRACKER_URL (or neither).")
+    else:
+        print(
+            "\nPython environment ready — that's everything for the pre-work.\n"
+            "We'll share the service URLs at the start of the interview; re-run then with:\n"
+            "  CRM_URL=<url> TRACKER_URL=<url> python smoke_test.py"
+        )
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except SystemExit as exc:
-        print(exc, file=sys.stderr)
-        raise
+    main()

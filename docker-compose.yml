@@ -1,6 +1,6 @@
-# Pulls prebuilt images from GHCR — no local build needed.
-# Pin to a specific tag/digest before sharing with candidates so everyone runs
-# the same environment. `latest` is fine for local trials.
+# Fallback only: the services are normally hosted by us and you'll receive
+# URLs at the interview. Use this file only if we ask you to run locally
+# (requires access to the images).
 services:
   crm-api:
     image: ghcr.io/taktile-interview/crm-api:latest
