@@ -25,8 +25,9 @@ environment — we host the mock services and share their URLs when we begin.
 
 Just before the interview, please `git pull` so you're on the latest version.
 
-You do **not** need Docker or any keys. At the start of the interview we'll
-share the service URLs and an LLM API key (revoked afterwards).
+You do **not** need Docker or any keys. The service URLs are already in the
+starter code; at the start of the interview we'll share an LLM API key
+(revoked afterwards).
 
 ## At the start of the interview
 
