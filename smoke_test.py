@@ -64,8 +64,8 @@ def _get(url: str, attempts: int = 5):
 
 def check_services() -> None:
     print("Checking CRM API ...", end=" ", flush=True)
-    convs = _get(f"{CRM_URL}/conversations").json()["conversations"]
-    print(f"ok ({len(convs)} conversations on the first page)")
+    _get(f"{CRM_URL}/conversations")
+    print("ok")
 
     print("Checking ticket tracker ...", end=" ", flush=True)
     _get(f"{TRACKER_URL}/health")

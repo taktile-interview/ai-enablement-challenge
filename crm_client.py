@@ -1,10 +1,8 @@
 """Starter CRM client — working, but naive.
 
-This is intentionally the *before* state. It walks the cursor pagination and
-returns conversations, and it works fine for a single quick call. Under a real
-agent loop it will show its seams: no retry/backoff (the API rate-limits and
-occasionally 500s) and no deduplication (the API's pagination can hand you the
-same conversation on two adjacent pages). Hardening it is part of the task.
+It fetches conversations from the CRM API and works fine for a quick call.
+Treat it as a starting point, not a finished integration — whether it holds up
+inside an agent loop is for you to judge.
 """
 
 import os
