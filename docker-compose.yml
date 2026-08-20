@@ -1,0 +1,18 @@
+# Fallback only: the services are normally hosted by us and you'll receive
+# URLs at the interview. Use this file only if we ask you to run locally
+# (requires access to the images).
+services:
+  crm-api:
+    image: ghcr.io/taktile-interview/crm-api:latest
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+    environment:
+      # Provided by us if we ever ask you to run locally.
+      - CHALLENGE_KEY=${CHALLENGE_KEY:-}
+
+  tracker-api:
+    image: ghcr.io/taktile-interview/tracker-api:latest
+    ports:
+      - "8002:8000"
+    restart: unless-stopped
