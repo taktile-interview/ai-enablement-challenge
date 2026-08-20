@@ -47,7 +47,6 @@ export ANTHROPIC_API_KEY=<key from chat>
 | `smoke_test.py` | Verifies your Python env, and the services when they're online. |
 | `crm_client.py` | A **working but naive** CRM client — your starting point. |
 | `requirements.txt` | Everything to install before the interview. |
-| `docker-compose.yml` | Fallback for running the services locally — only used if we ask you to. |
 
 ## The services
 
@@ -65,8 +64,8 @@ naive client:
 python crm_client.py
 ```
 
-(Both URLs can be overridden with the `CRM_URL` / `TRACKER_URL` env vars, e.g.
-for the local fallback.)
+(Both URLs can be overridden with the `CRM_URL` / `TRACKER_URL` env vars if we
+ever need to point you elsewhere.)
 
 ## Troubleshooting
 
